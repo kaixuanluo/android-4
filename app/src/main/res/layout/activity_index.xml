@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/index_camera_1_bt"
+        android:text="打开第一个 Camera1 mediaCodec 1 新"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/index_camera_2_bt"
+        android:text="打开第二个 Camera2 mediaCodec 2 旧"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/index_camera_3_bt"
+        android:text="打开第三个 Camera1 mediaCodec 旧"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/index_camera_4_bt"
+        android:text="打开第四个 Camera1 mediaCodec 旧 OpenGL"/>
+
+</LinearLayout>

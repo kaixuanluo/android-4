@@ -4,16 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.zdragon.videoio.MainActivity">
+    tools:context="com.zdragon.videoio.Camera2mediaCodec1.CameraActivity2">
 
     <TextureView
-        android:id="@+id/camera"
+        android:id="@+id/camera2PreviewTv"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_weight="1"/>
 
     <TextureView
-        android:id="@+id/decode"
+        android:id="@+id/camera2decodeTv"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_weight="1" />

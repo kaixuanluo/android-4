@@ -1,4 +1,4 @@
-package com.zdragon.videoio;
+package com.zdragon.videoio.Camera1mediaCodec2;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -8,16 +8,18 @@ import android.hardware.Camera;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Size;
 import android.view.Surface;
 import android.view.TextureView;
+
+import com.zdragon.videoio.BaseActivity;
+import com.zdragon.videoio.R;
+
 import java.io.IOException;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class CameraActivity1 extends BaseActivity {
 
     private final static String TAG = "VideoIO";
     private final static String MIME_FORMAT = "video/avc"; //support h.264
@@ -35,13 +37,14 @@ public class MainActivity extends AppCompatActivity {
     private Camera.PreviewCallback mPreviewCallBack = new Camera.PreviewCallback() {
         @Override
         public void onPreviewFrame(byte[] bytes, Camera camera) {
-            byte[] i420bytes = new byte[bytes.length];
-            //from YV20 TO i420
-            System.arraycopy(bytes, 0, i420bytes, 0, mPreviewWidth * mPreviewHeight);
-            System.arraycopy(bytes, mPreviewWidth * mPreviewHeight + mPreviewWidth * mPreviewHeight / 4, i420bytes, mPreviewWidth * mPreviewHeight, mPreviewWidth * mPreviewHeight / 4);
-            System.arraycopy(bytes, mPreviewWidth * mPreviewHeight, i420bytes, mPreviewWidth * mPreviewHeight + mPreviewWidth * mPreviewHeight / 4, mPreviewWidth * mPreviewHeight / 4);
+//            byte[] i420bytes = new byte[bytes.length];
+//            //from YV20 TO i420
+//            System.arraycopy(bytes, 0, i420bytes, 0, mPreviewWidth * mPreviewHeight);
+//            System.arraycopy(bytes, mPreviewWidth * mPreviewHeight + mPreviewWidth * mPreviewHeight / 4, i420bytes, mPreviewWidth * mPreviewHeight, mPreviewWidth * mPreviewHeight / 4);
+//            System.arraycopy(bytes, mPreviewWidth * mPreviewHeight, i420bytes, mPreviewWidth * mPreviewHeight + mPreviewWidth * mPreviewHeight / 4, mPreviewWidth * mPreviewHeight / 4);
             if(mVideoEncoder != null) {
-                mVideoEncoder.inputFrameToEncoder(i420bytes);
+                Log.d(TAG, "mVideoEncoder.inputFrameToEncoder(i420bytes);");
+                mVideoEncoder.inputFrameToEncoder(bytes);
             }
         }
     };
@@ -52,6 +55,9 @@ public class MainActivity extends AppCompatActivity {
             openCamera(surfaceTexture,i, i1);
             mVideoEncoder = new VideoEncoder(MIME_FORMAT, mPreviewWidth, mPreviewHeight);
             mVideoEncoder.startEncoder();
+
+            mDecodeTexture = (TextureView)findViewById(R.id.camera1decodeTv);
+            mDecodeTexture.setSurfaceTextureListener(mDecodeTextureListener);
         }
 
         @Override
@@ -76,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int i, int i1) {
             System.out.println("----------" + i + " ," + i1);
+
             mVideoDecoder = new VideoDecoder(MIME_FORMAT, new Surface(surfaceTexture), mPreviewWidth, mPreviewHeight);
             mVideoDecoder.setEncoder(mVideoEncoder);
             mVideoDecoder.startDecoder();
@@ -105,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_camera1);
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
             Log.i("TEST","Granted");
@@ -116,10 +123,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initView(){
-        mCameraTexture = (TextureView)findViewById(R.id.camera);
-        mDecodeTexture = (TextureView)findViewById(R.id.decode);
+        mCameraTexture = (TextureView)findViewById(R.id.camera1PreviewTv);
         mCameraTexture.setSurfaceTextureListener(mCameraTextureListener);
-        mDecodeTexture.setSurfaceTextureListener(mDecodeTextureListener);
+
     }
 
     private void openCamera(SurfaceTexture texture,int width, int height){
@@ -157,5 +163,13 @@ public class MainActivity extends AppCompatActivity {
         }
         mCamera.stopPreview();
         mCamera.release();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(mVideoEncoder != null){
+            mVideoEncoder.release();
+        }
     }
 }
